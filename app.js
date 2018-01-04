@@ -18,6 +18,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 //express will use to look up the override :) 
 app.use(methodOverride("_method"));
 
+
+
 //Mongoose config
 //setup Mongoose by creating schema and model
 
@@ -138,6 +140,11 @@ app.delete("/blogs/:id", function(req, res){
 	});
 	
 	
+});
+
+//chart showing restful routes 
+app.get("/chart", function(req, res){
+	res.sendFile(__dirname + "/views/chart.html");
 });
 
 
