@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express(),
 	mongoose = require('mongoose'),
+	sanitizer = require('express-sanitizer'),
 	bodyParser = require('body-parser'),
 	methodOverride = require('method-override');
 
@@ -10,6 +11,7 @@ app.set("view engine", "ejs");
 //tells express to look at the public directory for files
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(sanitizer());
 //this line will help us stick to convention by overriding the method
 //used on an html form. Because html forms only allow for get and post
 //requests we need to trick it into using PUT for our update route. The
@@ -74,6 +76,7 @@ app.get("/blogs/new", function(req, res){
 
 app.post("/blogs", function(req, res){
 	//create the new post
+	req.body.blog.body = req.sanitize(req.body.blog.body);
 	var data = req.body.blog;
 	Blog.create(data, function(err, blog){
 		if(err){
@@ -116,7 +119,7 @@ app.get("/blogs/:id/edit", function(req, res){
 
 //Update Route
 app.put("/blogs/:id", function(req, res){
-	
+	req.body.blog.body = req.sanitize(req.body.blog.body);
 	var id = req.params.id;
 	Blog.findByIdAndUpdate(id,req.body.blog,function(err, blog){
 		if(err){
